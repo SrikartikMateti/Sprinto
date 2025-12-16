@@ -14,3 +14,8 @@ npx prisma db push (run this command to create db in neon)]
 1) create webhook and take the key and past into .env
 2) get ingest event key and signing key
 3) go to ingest docs with node.js and install ingest 
+4) create inngest folder and define the functions
+5) update app.js
+6) create vercel.js
+7) deploy using vercel
+8) then go to ingeest and connect with vercel link and then create user again and we can observe the app run
