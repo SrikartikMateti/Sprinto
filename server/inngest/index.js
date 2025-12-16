@@ -134,4 +134,8 @@ const syncWorkSpaceMemberCreation=inngest.createFunction(
 
 
 // Create an empty array where we'll export future Inngest functions
+<<<<<<< HEAD
 export const functions = [syncUserCreation, syncUserDeletion, syncUserUpdation, syncWorkSpaceCreation, syncWorkSpaceUpdation, syncWorkSpaceDeletion, syncWorkSpaceMemberCreation];
+=======
+export const functions = [syncUserCreation, syncUserDeletion, syncUserUpdation];
+>>>>>>> 98c339fd74ce3b9185e42df62cd6463ab29ecc8a
