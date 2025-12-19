@@ -6,7 +6,7 @@ const projectRouter=express.Router()
 
 
 projectRouter.post('/',protect,createProject)
-projectRouter.put('/',protect,updateProject)
+projectRouter.put('/', protect, updateProject)
 projectRouter.post('/:projectId/addMember',protect,addMember)
 
 export default projectRouter
