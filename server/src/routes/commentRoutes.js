@@ -1,5 +1,5 @@
 import {addComment,getComments} from "../controllers/commentController"
-import express from express
+import express from "express"
 
 commentRouter=express.Router();
 
