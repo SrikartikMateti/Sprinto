@@ -2,7 +2,7 @@ import { updateTask, createTask, deleteTask } from "../controllers/taskControlle
 
 import express from "express"
 
-taskRouter=express.Router()
+const taskRouter=express.Router()
 taskRouter.post('/',createTask)
 taskRouter.put('/:id', updateTask)
 taskRouter.post('/delete/',deleteTask)
