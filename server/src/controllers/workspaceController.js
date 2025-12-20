@@ -1,10 +1,10 @@
 
-import  prisma  from "../../configs/prisma.configs.js"
+import prisma from "../../configs/prisma.configs.js"
 
 //Get all workspaces for users(members)
 export const getUserWorkspaces = async (req, res) => {
     try {
-        const { userId } = await req.auth;
+        const { userId } = req.auth();
 
         const workspaces = await prisma.workspace.findMany({
             where: {
@@ -20,8 +20,14 @@ export const getUserWorkspaces = async (req, res) => {
                         user: true
                     }
                 },
+                owner: true,
                 projects: {
                     include: {
+                        members: {
+                            include: {
+                                user: true
+                            }
+                        },
                         tasks: {
                             include: {
                                 assignee: true,
@@ -45,61 +51,55 @@ export const getUserWorkspaces = async (req, res) => {
 };
 
 // Add member to workspace
-export const addMember = async(req,res)=>{
+export const addMember = async (req, res) => {
     try {
-        const {userId}=await req.auth;//this is the  
-        const {email,role,workspaceId,message}=req.body;
+        const { userId } = req.auth();//this is the  
+        const { email, role, workspaceId, message } = req.body;
 
         //check if user already exists
-        const user=await prisma.user.findUnique({
-            where:{
-                email:email
-            }   
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
         })//we want the user to be alreaady present in user table
 
-        if(!user)
-        {
-            return res.status(404).json({message:"User not found"})
+        if (!user) {
+            return res.status(404).json({ message: "User not found" })
         }
 
-        if(!workspaceId || !role)
-        {
-            return res.status(400).json({ message: "Missing required parameter"})
+        if (!workspaceId || !role) {
+            return res.status(400).json({ message: "Missing required parameter" })
         }
 
-        if(!["ADMIN","MEMBER"].includes(role))
-        {
+        if (!["ADMIN", "MEMBER"].includes(role)) {
             return res.status(400).json({ message: "Wrong role provided" })
         }
         //fetch workspace
         const workspace = await prisma.workspace.findUnique({//use lowercase for accessing tables
-            where:{
-                id:workspaceId
+            where: {
+                id: workspaceId
             },
-            include:{
-                members:true
+            include: {
+                members: true
             }
 
         })
-        if(!workspace)
-        {
+        if (!workspace) {
             return res.status(404).json({ message: "Workspace not found" })
         }
         //Check creator has admin role or not
-        if(!workspace.members.find((member)=>member.userId===userId && member.role==='ADMIN'))
-        {
+        if (!workspace.members.find((member) => member.userId === userId && member.role === 'ADMIN')) {
             return res.status(403).json({ message: "Insufficient privileges" })
         }
         //check if user is already a member
-        const existingMemeber=workspace.members.find((member)=>member.userId===user.id);
-        if(existingMemeber)
-        {
+        const existingMemeber = workspace.members.find((member) => member.userId === user.id);
+        if (existingMemeber) {
             return res.status(400).json({ message: "User is already a member" })
         }
 
-        const member=await prisma.workspaceMember.create({
-            data:{
-                userId:user.id,
+        const member = await prisma.workspaceMember.create({
+            data: {
+                userId: user.id,
                 workspaceId,
                 email,
                 role,
@@ -107,7 +107,7 @@ export const addMember = async(req,res)=>{
 
             }
         })
-        return res.status(201).json({member,message: "User succesfully added" })
+        return res.status(201).json({ member, message: "User succesfully added" })
 
 
 
